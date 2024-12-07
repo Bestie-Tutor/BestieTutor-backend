@@ -143,7 +143,7 @@ exports.addUserMessage = async (req, res) => {
         await conversationService.generateFeedbackForMessage(messageId, text);
 
         res.set('Content-Type', 'application/json');
-        res.json({ messageId });
+        res.json({ messageId, conversationId });
     } catch (error) {
         console.error('사용자 메시지 등록 중 에러:', error);
         res.status(500).json({ message: '사용자 메시지 등록 중 에러' });
@@ -208,5 +208,25 @@ exports.getResponse = async (req, res) => {
     } catch (error) {
         console.error('대화 중 에러:', error);
         res.status(500).json({ message: '대화 중 에러' });
+    }
+};
+
+// endTime Update
+exports.updateEndTime = async (req, res) => {
+    const { converseId } = req.body;
+
+    if (!converseId) {
+        return res.status(404).json({ message: 'converseId가 필요합니다.' });
+    }
+
+    try {
+        const updateEndTime = await conversationService.updateEndTime(converseId);
+        if (!updateEndTime) {
+            return res.status(404).json({ message: '대화를 찾을 수 없습니다.' });
+        }
+        res.status(200).json({ message: 'EndTime 추가 성공', updateEndTime });
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({ message: error.message });
     }
 };

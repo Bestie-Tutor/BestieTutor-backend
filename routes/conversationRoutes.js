@@ -10,4 +10,6 @@ router.post('/addUserMessage', conversationController.addUserMessage);
 
 router.get('/getConversationHistory/:email', conversationController.getConversationHistory);
 
+router.put('/updateEndTime', conversationController.updateEndTime);
+
 module.exports = router;

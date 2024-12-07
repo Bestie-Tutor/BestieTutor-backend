@@ -357,3 +357,21 @@ exports.generateTTS = async function (text) {
         throw error;
     }
 };
+
+exports.updateEndTime = async (converse_id) => {
+    try {
+        const conversation = await Conversation.findOne({ converse_id: converse_id });
+        if (!conversation) {
+            throw new Error('Conversation not found');
+        }
+
+        conversation.end_time = new Date();
+
+        await conversation.save();
+
+        return conversation; 
+    } catch (error) {
+        console.error('Error updating end_time:', error);
+        throw error; 
+    }
+};
