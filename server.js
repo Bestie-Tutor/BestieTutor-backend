@@ -2,6 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
 const cookieParser = require('cookie-parser');
+const bodyParser = require('body-parser');
 const mongoose = require('mongoose');
 
 // 라우트 임포트
@@ -14,6 +15,7 @@ const noticeRoutes = require('./routes/noticeRoutes');
 const eventRoutes = require('./routes/eventRoutes');
 const topicRoutes = require('./routes/topicRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const paymentRoutes = require('./routes/paymentRoutes');
 
 dotenv.config();
 mongoose.connect(process.env.MONGO_URL)
@@ -31,6 +33,7 @@ app.use(cors({
 
 app.use(express.json());
 app.use(cookieParser());
+app.use(bodyParser.json());
 
 // 기본 라우트
 app.get('/', (req, res) => {
@@ -63,6 +66,9 @@ app.use('/topic', topicRoutes);
 
 // 관리자 관련 라우트
 app.use('/admin', adminRoutes);
+
+// 결제 관련 라우트
+app.use('/api/payment', paymentRoutes);
 
 // 서버 시작
 app.listen(port, () => {
