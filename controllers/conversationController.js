@@ -179,6 +179,8 @@ exports.getResponse = async (req, res) => {
             return res.status(400).json({ message: '잘못된 난이도입니다.' });
         }
 
+        const detail = difficultyData.detail;
+
         // 캐릭터 검증
         const character = await Character.findOne({ name: characterName });
         if (!character) {
@@ -188,18 +190,18 @@ exports.getResponse = async (req, res) => {
         // 새 대화 생성 또는 기존 대화 재사용
         let conversationId = req.body.converseId;
         if (!conversationId) {
-            const conversationData = await conversationService.createNewConversation({
-                email: profileResponse.data.email,
-                mainTopic,
-                subTopic,
-                difficulty,
-                characterName
-            });
-            conversationId = conversationData.conversationId;
+                const conversationData = await conversationService.createNewConversation({
+                    email: profileResponse.data.email,
+                    mainTopic,
+                    subTopic,
+                    difficulty,
+                    characterName
+                });
+                conversationId = conversationData.conversationId;
         }
-
+        
         // GPT 응답 생성
-        const { gptResponse } = await conversationService.GPTResponse(text, conversationId);
+        const { gptResponse } = await conversationService.GPTResponse({ text, converseId: conversationId, mainTopic, subTopic, difficulty, detail, character });
 
         // TTS 변환 후 텍스트와 음성 데이터 함께 응답
         const audioBuffer = await conversationService.generateTTS(gptResponse);
